@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create New Order - Laundry App</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "secondary": "#4597a1",
+                        "background-light": "#fcfdfd",
+                        "background-dark": "#1a2128",
+                        "surface-light": "#EBF5F6",
+                        "surface-dark": "#24343d",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "lift": "0 10px 25px -5px rgba(0, 110, 122, 0.1)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark pb-24">
+<!-- Header Section -->
+<header class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between px-4 py-3">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-800 dark:text-white">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">New Order</h1>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-800 dark:text-white">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Progress Stepper -->
+<div class="px-6 py-2 pb-4">
+<div class="flex w-full items-center justify-between gap-2">
+<div class="flex flex-col items-center gap-1 w-1/3">
+<div class="h-1.5 w-full rounded-full bg-primary"></div>
+<span class="text-[10px] font-semibold text-primary uppercase tracking-wider">Service</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-1/3">
+<div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary opacity-30 w-1/2"></div>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Details</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-1/3">
+<div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700"></div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Schedule</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-5 pt-6 flex flex-col gap-8">
+<!-- Step 1: Service Selection -->
+<section>
+<div class="flex justify-between items-end mb-4">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight">What do you need<br/>cleaned today?</h2>
+<span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-lg">Step 1/3</span>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Active Card -->
+<div class="group relative overflow-hidden rounded-xl bg-surface-light dark:bg-surface-dark p-1 shadow-lift border-2 border-primary cursor-pointer transition-all">
+<div class="absolute top-3 right-3 z-10">
+<span class="material-symbols-outlined text-primary text-2xl fill-1">check_circle</span>
+</div>
+<div class="flex h-full flex-row">
+<div class="flex-1 p-4 flex flex-col justify-between z-10">
+<div>
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-white dark:bg-slate-700 shadow-sm mb-3 text-primary">
+<span class="material-symbols-outlined">local_laundry_service</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white">Wash &amp; Fold</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Everyday laundry, by the pound.</p>
+</div>
+<div class="mt-4">
+<span class="text-sm font-bold text-primary">$1.50</span>
+<span class="text-xs text-slate-400">/ lb</span>
+</div>
+</div>
+<div class="w-24 h-full bg-cover bg-center rounded-r-lg" data-alt="Stack of neatly folded colorful towels" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjDTOXUzDgZWSnjX5527iZ70bDV_C3-PJ_15DTZUToz9vjsoJFOE01ru4EETd5XPhHyPc6lYot1Zx8wjbf0nwsQ7JGmGcZOrxbgRD7-fROiwTsrqXtGLT9a0opsFcd43QDZ3pllOO-J0lTwc22SRedFNPji9M5b7DQRgMpU6TMb-069jcYuePTRPvjGRn3c4PDiEKemf_l3J4PTSQ4vKguCwadWvAuiTzyMHn-jT7-9FAh8vVnysPdDKPLGUdTVOTTEX531GeP2MyV');"></div>
+</div>
+</div>
+<!-- Inactive Card 1 -->
+<div class="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm">
+<div class="flex h-full flex-row opacity-80 group-hover:opacity-100">
+<div class="flex-1 p-4 flex flex-col justify-between z-10">
+<div>
+<div class="inline-flex items-center justify-center p-2 rounded-lg bg-slate-50 dark:bg-slate-700 shadow-sm mb-3 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">dry_cleaning</span>
+</div>
+<h3 class="font-bold text-lg text-slate-900 dark:text-white">Dry Clean</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Delicates, suits &amp; dresses.</p>
+</div>
+<div class="mt-4">
+<span class="text-sm font-bold text-slate-700 dark:text-slate-300">Per Item</span>
+</div>
+</div>
+<div class="w-24 h-full bg-cover bg-center rounded-r-lg grayscale group-hover:grayscale-0 transition-all" data-alt="Hanging white shirts on a rack" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD0-IfIWcoi3gfiAWkOzzua-aoUd_G9yBFN2y20RrYhF0oqcLJjo5He_Jal4Lto7-4YsM2OXTSk9GqW-py5fH6PHy8JgM1lc6QOC3F4eNHqjp-lvVFLFWh8jd9qUyb94wCOhrrNod7aheoD5eRs7HPUw4k0T2agtAUy8iMqYsOxMlvmpsxQBi7BinYpkD7so68-cQxQ1IravSYE0maTzwokAm_vmOBkdAl7FfrMi9lLABTKY9XzogBLrG2BFP0FHbH_G5bpYglqSnKk');"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 2: Item Details (Conditional for Dry Clean but shown here for layout completeness) -->
+<section>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Quick Add Items</h2>
+<div class="flex flex-col gap-3">
+<!-- Counter Item 1 -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-surface-light dark:bg-surface-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">styler</span>
+</div>
+<div>
+<p class="font-bold text-sm text-slate-900 dark:text-white">Men's Shirt</p>
+<p class="text-xs text-slate-500">$3.00 / ea</p>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-light dark:bg-surface-dark rounded-full p-1">
+<button class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-50">
+<span class="material-symbols-outlined text-sm font-bold">remove</span>
+</button>
+<span class="font-bold text-sm w-4 text-center">2</span>
+<button class="size-7 rounded-full bg-primary text-white shadow-sm flex items-center justify-center hover:bg-primary/90">
+<span class="material-symbols-outlined text-sm font-bold">add</span>
+</button>
+</div>
+</div>
+<!-- Counter Item 2 -->
+<div class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-surface-light dark:bg-surface-dark flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-[20px]">checkroom</span>
+</div>
+<div>
+<p class="font-bold text-sm text-slate-900 dark:text-white">Trousers</p>
+<p class="text-xs text-slate-500">$4.50 / ea</p>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-light dark:bg-surface-dark rounded-full p-1">
+<button class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-50">
+<span class="material-symbols-outlined text-sm font-bold">remove</span>
+</button>
+<span class="font-bold text-sm w-4 text-center">0</span>
+<button class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-primary hover:bg-slate-50">
+<span class="material-symbols-outlined text-sm font-bold">add</span>
+</button>
+</div>
+</div>
+<button class="w-full py-2 text-sm font-semibold text-primary text-center hover:underline mt-1">
+                        + Add other items
+                    </button>
+</div>
+</section>
+<!-- Notes Section -->
+<section>
+<div class="relative">
+<label class="sr-only" for="notes">Special Instructions</label>
+<div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+<span class="material-symbols-outlined text-slate-400">edit_note</span>
+</div>
+<textarea class="block w-full rounded-xl border-0 py-3 pl-10 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-800 dark:ring-slate-700 dark:text-white bg-white resize-none" id="notes" placeholder="Any special stains or instructions?" rows="2"></textarea>
+</div>
+</section>
+<!-- Step 3: Schedule -->
+<section class="pb-6">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Pickup Time</h2>
+<button class="text-xs font-semibold text-primary">Edit Date</button>
+</div>
+<!-- Date Scroller -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar mb-5 pb-2">
+<div class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-primary text-white shadow-lg shadow-primary/25 border border-primary cursor-pointer shrink-0">
+<span class="text-xs font-medium opacity-80">MON</span>
+<span class="text-xl font-bold">12</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50">
+<span class="text-xs font-medium opacity-60">TUE</span>
+<span class="text-xl font-bold">13</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50">
+<span class="text-xs font-medium opacity-60">WED</span>
+<span class="text-xl font-bold">14</span>
+</div>
+<div class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50">
+<span class="text-xs font-medium opacity-60">THU</span>
+<span class="text-xl font-bold">15</span>
+</div>
+</div>
+<!-- Time Slots Grid -->
+<div class="grid grid-cols-2 gap-3">
+<button class="relative flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">wb_twilight</span>
+                        8:00 - 10:00 AM
+                        <div class="absolute -top-2 -right-2 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">Popular</div>
+</button>
+<button class="flex items-center justify-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+<span class="material-symbols-outlined text-[18px]">sunny</span>
+                        12:00 - 2:00 PM
+                    </button>
+<button class="flex items-center justify-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+<span class="material-symbols-outlined text-[18px]">nights_stay</span>
+                        6:00 - 8:00 PM
+                    </button>
+<button class="flex items-center justify-center gap-2 p-3 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 bg-transparent text-slate-400 font-medium text-sm">
+                        More Slots...
+                    </button>
+</div>
+</section>
+</main>
+<!-- Floating Footer CTA -->
+<div class="fixed bottom-0 left-0 right-0 z-30 max-w-md mx-auto">
+<!-- Gradient Fade -->
+<div class="h-8 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent w-full pointer-events-none"></div>
+<div class="bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 p-5 pt-2 pb-8 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<!-- Wallet Info -->
+<div class="flex items-center justify-between mb-4 px-1">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Estimated Total</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-extrabold text-slate-900 dark:text-white">$24.50</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">account_balance_wallet</span>
+<span>Wallet: $50.00</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 rounded-xl shadow-lift shadow-primary/30 flex items-center justify-between px-6 group transition-all transform active:scale-[0.98]">
+<span>Request Pickup</span>
+<div class="bg-white/20 p-1.5 rounded-lg group-hover:translate-x-1 transition-transform">
+<span class="material-symbols-outlined block">arrow_forward</span>
+</div>
+</button>
+</div>
+</div>
+</div>
+</body></html>

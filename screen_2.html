@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subscription Plans</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "primary-dark": "#005a63",
+                        "primary-light": "#E0F2F4",
+                        "accent": "#FFB4A2",
+                        "background-light": "#fcfdfd",
+                        "background-dark": "#1a2128",
+                        "surface-light": "#EBF5F6",
+                        "surface-dark": "#2c353e",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col items-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-md h-full min-h-screen bg-background-light dark:bg-background-dark shadow-2xl overflow-x-hidden relative flex flex-col pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-primary/10 px-4 py-3 flex items-center justify-between">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-slate-800 dark:text-slate-100">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">Subscription Plans</h1>
+<div class="w-10"></div> <!-- Spacer for alignment -->
+</header>
+<!-- Headline & Intro -->
+<div class="px-5 pt-6 pb-2">
+<h2 class="text-2xl font-extrabold text-slate-900 dark:text-white leading-tight mb-2">Upgrade your laundry experience</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">Choose a plan that fits your lifestyle. Cancel or pause anytime.</p>
+</div>
+<!-- Billing Cycle Toggle -->
+<div class="px-5 py-4">
+<div class="flex items-center justify-between bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-primary/10">
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-white font-bold text-sm">Billed Yearly</span>
+<span class="text-primary text-xs font-semibold bg-primary/10 px-2 py-0.5 rounded-md w-fit mt-1">Save 20%</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Plans Grid -->
+<div class="flex flex-col gap-5 px-5 pb-6">
+<!-- Basic Plan -->
+<div class="group relative flex flex-col p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-sm hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Basic</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">For occasional needs</p>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">$19</span>
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">/mo</span>
+</div>
+</div>
+<hr class="border-dashed border-slate-200 dark:border-slate-600 mb-4"/>
+<ul class="space-y-3 mb-6 flex-grow">
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        2 Pickups included
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        48h Turnaround
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        Standard folding
+                    </li>
+</ul>
+<button class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    Select Basic
+                </button>
+</div>
+<!-- Pro Plan (Recommended) -->
+<div class="relative flex flex-col p-6 rounded-2xl bg-primary/5 dark:bg-surface-dark border-2 border-primary shadow-lg scale-[1.02] transform transition-transform z-10">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow-md">
+                    Most Popular
+                </div>
+<div class="flex justify-between items-start mb-4 mt-2">
+<div>
+<h3 class="text-xl font-bold text-primary dark:text-white">Pro</h3>
+<p class="text-slate-600 dark:text-slate-300 text-xs mt-1">Best value for individuals</p>
+</div>
+<div class="text-right">
+<span class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">$39</span>
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">/mo</span>
+</div>
+</div>
+<hr class="border-dashed border-primary/20 mb-4"/>
+<ul class="space-y-3 mb-6 flex-grow">
+<li class="flex items-center gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px] filled">check_circle</span>
+                        4 Pickups included
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px] filled">check_circle</span>
+                        24h Turnaround
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px] filled">check_circle</span>
+                        Premium folding
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-800 dark:text-slate-200 font-medium">
+<span class="material-symbols-outlined text-primary text-[20px] filled">check_circle</span>
+                        Stain removal included
+                    </li>
+</ul>
+<button class="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary-dark shadow-md shadow-primary/20 transition-all active:scale-[0.98]">
+                    Select Pro
+                </button>
+</div>
+<!-- Family Plan -->
+<div class="relative flex flex-col p-6 rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-sm hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Family</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Unlimited convenience</p>
+</div>
+<div class="text-right">
+<span class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">$69</span>
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">/mo</span>
+</div>
+</div>
+<hr class="border-dashed border-slate-200 dark:border-slate-600 mb-4"/>
+<ul class="space-y-3 mb-6 flex-grow">
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        Unlimited Pickups
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        Same-day rush available
+                    </li>
+<li class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        Dry cleaning credits
+                    </li>
+</ul>
+<button class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    Select Family
+                </button>
+</div>
+<div class="h-4"></div>
+</div>
+<!-- Sticky Wallet Footer -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-20 p-4 pb-6 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between gap-4 p-4 rounded-xl bg-surface-light dark:bg-slate-800 border border-primary/20">
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wallet Balance</span>
+<span class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                        $50.00
+                        <span class="material-symbols-outlined text-primary text-sm" title="Secure">lock</span>
+</span>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 hover:bg-primary/20 dark:hover:bg-primary/30 rounded-lg transition-colors group">
+<span class="material-symbols-outlined text-primary text-xl group-hover:scale-110 transition-transform">add_card</span>
+<span class="text-sm font-bold text-primary">Top Up</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>
