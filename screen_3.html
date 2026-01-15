@@ -91,7 +91,7 @@
 </section>
 <!-- Quick Action: New Order -->
 <section class="px-6 mt-8">
-<button class="group relative w-full overflow-hidden rounded-2xl bg-slate-900 dark:bg-white p-1 shadow-lg transition-transform active:scale-[0.98]">
+<button id="new-order-button" class="group relative w-full overflow-hidden rounded-2xl bg-slate-900 dark:bg-white p-1 shadow-lg transition-transform active:scale-[0.98]">
 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
 <div class="flex h-16 items-center justify-between rounded-xl px-6">
 <div class="flex flex-col items-start">
@@ -225,4 +225,9 @@
 <!-- iOS Home Indicator -->
 <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-slate-900/20 dark:bg-white/20 rounded-full"></div>
 </div>
+<script>
+  document.getElementById('new-order-button').addEventListener('click', function() {
+    window.location.href = 'screen_1.html';
+  });
+</script>
 </body></html>

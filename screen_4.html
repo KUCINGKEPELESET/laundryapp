@@ -95,7 +95,7 @@
 <a class="text-sm font-semibold text-primary/80 hover:text-primary transition-colors decoration-primary/30 underline-offset-4 hover:underline" href="#">Forgot Password?</a>
 </div>
 <!-- Primary Action Button -->
-<button class="group w-full bg-primary hover:bg-[#005a63] text-white font-bold text-lg rounded-2xl py-4 shadow-lg shadow-primary/25 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-2">
+<button id="login-button" class="group w-full bg-primary hover:bg-[#005a63] text-white font-bold text-lg rounded-2xl py-4 shadow-lg shadow-primary/25 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-2">
 <span>Log In</span>
 <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </button>
@@ -121,4 +121,9 @@
 </p>
 </div>
 </div>
+<script>
+  document.getElementById('login-button').addEventListener('click', function() {
+    window.location.href = 'screen_3.html';
+  });
+</script>
 </body></html>

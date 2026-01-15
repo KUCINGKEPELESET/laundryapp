@@ -263,7 +263,7 @@
 <span>Wallet: $50.00</span>
 </div>
 </div>
-<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 rounded-xl shadow-lift shadow-primary/30 flex items-center justify-between px-6 group transition-all transform active:scale-[0.98]">
+<button id="request-pickup-button" class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 rounded-xl shadow-lift shadow-primary/30 flex items-center justify-between px-6 group transition-all transform active:scale-[0.98]">
 <span>Request Pickup</span>
 <div class="bg-white/20 p-1.5 rounded-lg group-hover:translate-x-1 transition-transform">
 <span class="material-symbols-outlined block">arrow_forward</span>
@@ -272,4 +272,9 @@
 </div>
 </div>
 </div>
+<script>
+  document.getElementById('request-pickup-button').addEventListener('click', function() {
+    window.location.href = 'screen_5.html';
+  });
+</script>
 </body></html>
