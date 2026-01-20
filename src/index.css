@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@theme {
+  --font-display: 'Manrope', sans-serif;
+  --color-primary: #006e7a;
+  --color-primary-light: #4597a1;
+  --color-background-light: #f5f8f8;
+  --color-background-dark: #0f2123;
+  --color-surface-light: #f0f7f8;
+  --color-surface-dark: #232d36;
+  --color-accent-blush: #FFB4A2;
+  --color-input-bg: #edf7f8;
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 15px rgba(0, 110, 122, 0.3);
+  --shadow-lift: 0 10px 30px -5px rgba(0, 110, 122, 0.15);
+}
+
+@layer base {
+  body {
+    @apply font-display antialiased selection:bg-primary/30 text-slate-900;
+  }
+}

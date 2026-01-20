@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry App</title>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        (async function () {
+            const { data: { user } } = await window.sb.auth.getUser();
+            if (user) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+</head>
+
+<body
+    style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f8f8; color: #006e7a; font-family: sans-serif;">
+    <div style="text-align: center;">
+        <span
+            style="display: inline-block; width: 48px; height: 48px; border: 4px solid #006e7a; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span>
+        <p style="margin-top: 10px; font-weight: bold;">Loading...</p>
+    </div>
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

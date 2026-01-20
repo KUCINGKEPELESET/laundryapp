@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profile - Laundry App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "background-light": "#fcfdfd",
+                        "surface-light": "#f0f7f8",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gray-100 dark:bg-gray-900 font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden flex justify-center items-center min-h-screen">
+
+    <div
+        class="relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-gray-900 sm:rounded-3xl sm:h-[calc(100vh-2rem)] shadow-2xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 pt-6 pb-4 bg-white dark:bg-gray-900 z-10">
+            <h1 class="text-2xl font-bold">Profile</h1>
+            <button onclick="saveProfile()" class="text-primary font-bold text-sm">Save</button>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- User Info Card -->
+            <div
+                class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl font-bold"
+                    id="profile-avatar">
+                    U
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold" id="profile-name">Loading...</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400" id="profile-email">loading@example.com</p>
+                </div>
+            </div>
+
+            <!-- Editable Details -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold uppercase text-slate-400 tracking-wider">Contact Info</h3>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone
+                        Number</label>
+                    <div class="relative">
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">call</span>
+                        <input type="tel" id="input-phone"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 focus:ring-primary focus:border-primary"
+                            placeholder="+62 812 3456 7890">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Saved
+                        Address</label>
+                    <div class="relative">
+                        <span
+                            class="absolute left-3 top-3 text-slate-400 material-symbols-outlined text-[20px]">location_on</span>
+                        <textarea id="input-address" rows="3"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 focus:ring-primary focus:border-primary"
+                            placeholder="Jl. Sudirman No..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Actions -->
+            <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <h3 class="text-sm font-bold uppercase text-slate-400 tracking-wider">Account Security</h3>
+
+                <button onclick="resetPassword()"
+                    class="w-full flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border border-slate-100 dark:border-slate-700">
+                    <span class="font-medium">Change Password</span>
+                    <span class="material-symbols-outlined text-slate-400">chevron_right</span>
+                </button>
+            </div>
+
+            <!-- Logout -->
+            <button onclick="logout()"
+                class="w-full mt-8 py-3 rounded-xl border border-red-200 text-red-600 font-bold hover:bg-red-50 transition-colors">
+                Log Out
+            </button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="shrink-0 bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-slate-800 py-3 px-6 pb-8">
+            <div class="flex justify-around items-end">
+                <button onclick="window.location.href='dashboard.html'"
+                    class="flex flex-col items-center justify-center w-full gap-1 text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="text-[10px] font-medium">Home</span>
+                </button>
+                <button onclick="window.location.href='orders.html'"
+                    class="flex flex-col items-center justify-center w-full gap-1 text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <span class="text-[10px] font-medium">Orders</span>
+                </button>
+                <button onclick="window.location.href='wallet.html'"
+                    class="flex flex-col items-center justify-center w-full gap-1 text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                    <span class="text-[10px] font-medium">Wallet</span>
+                </button>
+                <button class="flex flex-col items-center justify-center w-full gap-1 text-primary">
+                    <span class="material-symbols-outlined fill-1"
+                        style="font-variation-settings: 'FILL' 1;">person</span>
+                    <span class="text-[10px] font-bold">Profile</span>
+                </button>
+            </div>
+        </nav>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        // Load saved data (LocalStorage is fine for client-only preference like this for now, though DB is better)
+        document.getElementById('input-phone').value = localStorage.getItem('user_phone') || '';
+        document.getElementById('input-address').value = localStorage.getItem('user_address') || '';
+
+        // Check Auth
+        let currentUser = null;
+
+        async function checkUser() {
+            const { data: { user } } = await window.sb.auth.getUser();
+            if (user) {
+                currentUser = user;
+                const name = user.user_metadata.full_name || user.email.split('@')[0];
+                document.getElementById('profile-name').innerText = name;
+                document.getElementById('profile-email').innerText = user.email;
+                document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+        checkUser();
+
+        function saveProfile() {
+            const phone = document.getElementById('input-phone').value;
+            const address = document.getElementById('input-address').value;
+
+            localStorage.setItem('user_phone', phone);
+            localStorage.setItem('user_address', address);
+
+            // Visual feedback
+            const btn = document.querySelector('button[onclick="saveProfile()"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Saved!';
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }
+
+        async function resetPassword() {
+            if (currentUser && currentUser.email) {
+                try {
+                    const { error } = await window.sb.auth.resetPasswordForEmail(currentUser.email);
+                    if (error) throw error;
+                    alert('Password reset email sent to ' + currentUser.email);
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+
+        async function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                await window.sb.auth.signOut();
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Create New Order - Laundry App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "secondary": "#4597a1",
+                        "background-light": "#fcfdfd",
+                        "background-dark": "#1a2128",
+                        "surface-light": "#EBF5F6",
+                        "surface-dark": "#24343d",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "lift": "0 10px 25px -5px rgba(0, 110, 122, 0.1)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hiding for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+    <div
+        class="relative flex min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark pb-48">
+        <!-- Header Section -->
+        <header
+            class="sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button
+                    class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-800 dark:text-white">
+                    <span class="material-symbols-outlined">arrow_back_ios_new</span>
+                </button>
+                <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">New Order</h1>
+                <button
+                    class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-800 dark:text-white">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+            </div>
+            <!-- Progress Stepper -->
+            <div class="px-6 py-2 pb-4">
+                <div class="flex w-full items-center justify-between gap-2">
+                    <div class="flex flex-col items-center gap-1 w-1/3">
+                        <div class="h-1.5 w-full rounded-full bg-primary"></div>
+                        <span class="text-[10px] font-semibold text-primary uppercase tracking-wider">Service</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1 w-1/3">
+                        <div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-primary opacity-30 w-1/2"></div>
+                        </div>
+                        <span
+                            class="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Details</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1 w-1/3">
+                        <div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                        <span
+                            class="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Schedule</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 px-5 pt-6 flex flex-col gap-8">
+            <!-- Step 1: Service Selection -->
+            <section>
+                <div class="flex justify-between items-end mb-4">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight">What do you
+                        need<br />cleaned today?</h2>
+                    <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-lg">Step 1/3</span>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Active Card -->
+                    <div id="service-wash-fold" onclick="selectService('wash-fold')"
+                        class="group relative overflow-hidden rounded-xl bg-surface-light dark:bg-surface-dark p-1 shadow-lift border-2 border-primary cursor-pointer transition-all">
+                        <div class="absolute top-3 right-3 z-10" id="check-wash-fold">
+                            <span class="material-symbols-outlined text-primary text-2xl fill-1">check_circle</span>
+                        </div>
+                        <div class="flex h-full flex-row">
+                            <div class="flex-1 p-4 flex flex-col justify-between z-10">
+                                <div>
+                                    <div
+                                        class="inline-flex items-center justify-center p-2 rounded-lg bg-white dark:bg-slate-700 shadow-sm mb-3 text-primary">
+                                        <span class="material-symbols-outlined">local_laundry_service</span>
+                                    </div>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Wash &amp; Fold</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Everyday laundry, by the
+                                        pound.</p>
+                                </div>
+                                <div class="mt-4">
+                                    <span class="text-sm font-bold text-primary">Rp 6.000</span>
+                                    <span class="text-xs text-slate-400">/ kg</span>
+                                </div>
+                            </div>
+                            <div class="w-24 h-full bg-cover bg-center rounded-r-lg"
+                                data-alt="Stack of neatly folded colorful towels"
+                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjDTOXUzDgZWSnjX5527iZ70bDV_C3-PJ_15DTZUToz9vjsoJFOE01ru4EETd5XPhHyPc6lYot1Zx8wjbf0nwsQ7JGmGcZOrxbgRD7-fROiwTsrqXtGLT9a0opsFcd43QDZ3pllOO-J0lTwc22SRedFNPji9M5b7DQRgMpU6TMb-069jcYuePTRPvjGRn3c4PDiEKemf_l3J4PTSQ4vKguCwadWvAuiTzyMHn-jT7-9FAh8vVnysPdDKPLGUdTVOTTEX531GeP2MyV');">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Inactive Card 1 -->
+                    <div id="service-dry-clean" onclick="selectService('dry-clean')"
+                        class="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm">
+                        <div class="absolute top-3 right-3 z-10 hidden" id="check-dry-clean">
+                            <span class="material-symbols-outlined text-primary text-2xl fill-1">check_circle</span>
+                        </div>
+                        <div class="flex h-full flex-row opacity-80 group-hover:opacity-100">
+                            <div class="flex-1 p-4 flex flex-col justify-between z-10">
+                                <div>
+                                    <div
+                                        class="inline-flex items-center justify-center p-2 rounded-lg bg-slate-50 dark:bg-slate-700 shadow-sm mb-3 text-slate-600 dark:text-slate-300">
+                                        <span class="material-symbols-outlined">dry_cleaning</span>
+                                    </div>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">Dry Clean</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Delicates, suits &amp;
+                                        dresses.</p>
+                                </div>
+                                <div class="mt-4">
+                                    <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Per Item</span>
+                                </div>
+                            </div>
+                            <div class="w-24 h-full bg-cover bg-center rounded-r-lg grayscale group-hover:grayscale-0 transition-all"
+                                data-alt="Hanging white shirts on a rack"
+                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD0-IfIWcoi3gfiAWkOzzua-aoUd_G9yBFN2y20RrYhF0oqcLJjo5He_Jal4Lto7-4YsM2OXTSk9GqW-py5fH6PHy8JgM1lc6QOC3F4eNHqjp-lvVFLFWh8jd9qUyb94wCOhrrNod7aheoD5eRs7HPUw4k0T2agtAUy8iMqYsOxMlvmpsxQBi7BinYpkD7so68-cQxQ1IravSYE0maTzwokAm_vmOBkdAl7FfrMi9lLABTKY9XzogBLrG2BFP0FHbH_G5bpYglqSnKk');">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Step 2: Weight Input (For Wash & Fold) -->
+            <section id="section-weight">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Estimated Weight</h2>
+                <div
+                    class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-medium text-slate-600 dark:text-slate-300">Minimum 3 KG</span>
+                        <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">Rp 6.000 /
+                            KG</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="updateWeight(-1)"
+                            class="size-12 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                            <span class="material-symbols-outlined">remove</span>
+                        </button>
+                        <div class="flex-1 text-center">
+                            <div class="text-4xl font-extrabold text-slate-900 dark:text-white" id="weight-display">3
+                            </div>
+                            <span class="text-sm text-slate-400 font-medium">KG</span>
+                        </div>
+                        <button onclick="updateWeight(1)"
+                            class="size-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Item Details (For Dry Clean) -->
+            <section id="section-items" class="hidden">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Quick Add Items</h2>
+                <div class="flex flex-col gap-3">
+                    <!-- Counter Item 1 -->
+                    <div
+                        class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 rounded-full bg-surface-light dark:bg-surface-dark flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-[20px]">styler</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm text-slate-900 dark:text-white">Men's Shirt</p>
+                                <p class="text-xs text-slate-500">Rp 15.000 / ea</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-surface-light dark:bg-surface-dark rounded-full p-1">
+                            <button onclick="updateQuantity('shirt', -1)"
+                                class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-50">
+                                <span class="material-symbols-outlined text-sm font-bold">remove</span>
+                            </button>
+                            <span id="qty-shirt" class="font-bold text-sm w-4 text-center">0</span>
+                            <button onclick="updateQuantity('shirt', 1)"
+                                class="size-7 rounded-full bg-primary text-white shadow-sm flex items-center justify-center hover:bg-primary/90">
+                                <span class="material-symbols-outlined text-sm font-bold">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Counter Item 2 -->
+                    <div
+                        class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 rounded-full bg-surface-light dark:bg-surface-dark flex items-center justify-center text-slate-500">
+                                <span class="material-symbols-outlined text-[20px]">checkroom</span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm text-slate-900 dark:text-white">Trousers</p>
+                                <p class="text-xs text-slate-500">Rp 20.000 / ea</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-surface-light dark:bg-surface-dark rounded-full p-1">
+                            <button onclick="updateQuantity('trousers', -1)"
+                                class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-600 disabled:opacity-50">
+                                <span class="material-symbols-outlined text-sm font-bold">remove</span>
+                            </button>
+                            <span id="qty-trousers" class="font-bold text-sm w-4 text-center">0</span>
+                            <button onclick="updateQuantity('trousers', 1)"
+                                class="size-7 rounded-full bg-white dark:bg-slate-700 shadow-sm flex items-center justify-center text-primary hover:bg-slate-50">
+                                <span class="material-symbols-outlined text-sm font-bold">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 text-sm font-semibold text-primary text-center hover:underline mt-1">
+                        + Add other items
+                    </button>
+                </div>
+            </section>
+            <!-- Notes Section -->
+            <section>
+                <div class="relative">
+                    <label class="sr-only" for="notes">Special Instructions</label>
+                    <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+                        <span class="material-symbols-outlined text-slate-400">edit_note</span>
+                    </div>
+                    <textarea
+                        class="block w-full rounded-xl border-0 py-3 pl-10 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-800 dark:ring-slate-700 dark:text-white bg-white resize-none"
+                        id="notes" placeholder="Any special stains or instructions?" rows="2"></textarea>
+                </div>
+            </section>
+            <!-- Step 3: Schedule -->
+            <section class="pb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Pickup Time</h2>
+                    <button class="text-xs font-semibold text-primary">Edit Date</button>
+                </div>
+                <!-- Date Scroller -->
+                <div class="flex gap-3 overflow-x-auto no-scrollbar mb-5 pb-2" id="date-scroller">
+                    <!-- Dates injected by JS for dynamism, or hardcoded with IDs -->
+                    <div id="date-0" onclick="selectDate(0, 'Mon, 12')"
+                        class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-primary text-white shadow-lg shadow-primary/25 border border-primary cursor-pointer shrink-0 transition-all">
+                        <span class="text-xs font-medium opacity-80">MON</span>
+                        <span class="text-xl font-bold">12</span>
+                    </div>
+                    <div id="date-1" onclick="selectDate(1, 'Tue, 13')"
+                        class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50 transition-all">
+                        <span class="text-xs font-medium opacity-60">TUE</span>
+                        <span class="text-xl font-bold">13</span>
+                    </div>
+                    <div id="date-2" onclick="selectDate(2, 'Wed, 14')"
+                        class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50 transition-all">
+                        <span class="text-xs font-medium opacity-60">WED</span>
+                        <span class="text-xl font-bold">14</span>
+                    </div>
+                    <div id="date-3" onclick="selectDate(3, 'Thu, 15')"
+                        class="flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50 transition-all">
+                        <span class="text-xs font-medium opacity-60">THU</span>
+                        <span class="text-xl font-bold">15</span>
+                    </div>
+                </div>
+                <!-- Time Slots Grid -->
+                <!-- Time Slots Grid -->
+                <div class="grid grid-cols-2 gap-3" id="time-grid">
+                    <button id="time-0" onclick="selectTime(0, '8:00 - 10:00 AM')"
+                        class="relative flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-sm transition-all">
+                        <span class="material-symbols-outlined text-[18px]">wb_twilight</span>
+                        8:00 - 10:00 AM
+                        <div
+                            class="absolute -top-2 -right-2 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">
+                            Popular</div>
+                    </button>
+                    <button id="time-1" onclick="selectTime(1, '12:00 - 2:00 PM')"
+                        class="flex items-center justify-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                        <span class="material-symbols-outlined text-[18px]">sunny</span>
+                        12:00 - 2:00 PM
+                    </button>
+                    <button id="time-2" onclick="selectTime(2, '6:00 - 8:00 PM')"
+                        class="flex items-center justify-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                        <span class="material-symbols-outlined text-[18px]">nights_stay</span>
+                        6:00 - 8:00 PM
+                    </button>
+                    <button
+                        class="flex items-center justify-center gap-2 p-3 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 bg-transparent text-slate-400 font-medium text-sm">
+                        More Slots...
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 4: Address Selection -->
+            <section class="pb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Pickup Location</h2>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer hover:border-primary/50 transition-colors"
+                    onclick="openMapModal()">
+                    <div class="flex items-start gap-3">
+                        <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-primary">location_on</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white" id="selected-address">Select
+                                Address</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Tap to choose on map</p>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400">chevron_right</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Floating Footer CTA -->
+        <div class="fixed bottom-0 left-0 right-0 z-30 max-w-md mx-auto">
+            <!-- Gradient Fade -->
+            <div
+                class="h-8 bg-gradient-to-t from-background-light dark:from-background-dark to-transparent w-full pointer-events-none">
+            </div>
+            <div
+                class="bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 p-5 pt-2 pb-8 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+                <!-- Wallet Info -->
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-slate-500 font-medium">Estimated Total</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="total-price" class="text-2xl font-extrabold text-slate-900 dark:text-white">Rp
+                                0</span>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-center gap-1.5 text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full">
+                        <span class="material-symbols-outlined text-[14px]">account_balance_wallet</span>
+                        <span>Wallet: Rp 500.000</span>
+                    </div>
+                </div>
+                <button id="checkout-button"
+                    class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg h-14 rounded-xl shadow-lift shadow-primary/30 flex items-center justify-between px-6 group transition-all transform active:scale-[0.98]">
+                    <span>Checkout</span>
+                    <div class="bg-white/20 p-1.5 rounded-lg group-hover:translate-x-1 transition-transform">
+                        <span class="material-symbols-outlined block">arrow_forward</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Map Modal -->
+        <div id="map-modal" class="fixed inset-0 z-[60] hidden">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeMapModal()"></div>
+            <div class="absolute bottom-0 sm:bottom-1/2 sm:translate-y-1/2 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-md w-full h-[80vh] sm:h-[600px] bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden transition-transform transform translate-y-full"
+                id="map-modal-content">
+                <div
+                    class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 z-10">
+                    <h3 class="font-bold text-lg">Choose Location</h3>
+                    <button onclick="closeMapModal()"
+                        class="size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="relative flex-1 bg-slate-100 dark:bg-slate-800">
+                    <div id="google-map" class="w-full h-full"></div>
+                    <!-- Center Marker (Visual) -->
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 pb-8">
+                        <span class="material-symbols-outlined text-4xl text-primary drop-shadow-md">location_on</span>
+                    </div>
+                </div>
+                <div class="p-5 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+                    <button onclick="confirmLocation()"
+                        class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg shadow-primary/30">
+                        Confirm Location
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google Maps script -->
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1IACU7135S4zkT96Hbv3JjS_vtEv7Hg&callback=initMap"
+            async defer></script>
+
+    </div>
+    <!-- Firebase Scripts -->
+    <!-- Supabase Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        // Wait for Auth
+        let currentUser = null;
+        async function checkUser() {
+            const { data: { user } } = await window.sb.auth.getUser();
+            if (user) {
+                currentUser = user;
+            }
+        }
+        checkUser();
+
+        const prices = {
+            'shirt': 15000,
+            'trousers': 20000,
+            'wash-fold-kg': 6000 // Per KG
+        };
+
+        let state = {
+            service: 'wash-fold',
+            weight: 3, // Default min 3kg
+            items: {
+                'shirt': 0,
+                'trousers': 0
+            },
+            date: 'Mon, 12',
+            time: '8:00 - 10:00 AM',
+            address: 'Select Address',
+            lat: null,
+            lng: null
+        };
+
+        // Format IDR helper
+        const formatIDR = (num) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(num);
+        };
+
+        // [Middle of file omitted for brevity, keeping existing logic]
+
+        // Schedule Logic
+        function selectDate(idx, dateStr) {
+            state.date = dateStr;
+            // Reset styles
+            for (let i = 0; i < 4; i++) {
+                const el = document.getElementById(`date-${i}`);
+                if (el) {
+                    el.className = 'flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 cursor-pointer shrink-0 hover:border-primary/50 transition-all';
+                    el.children[0].className = 'text-xs font-medium opacity-60';
+                }
+            }
+            // Set active
+            const active = document.getElementById(`date-${idx}`);
+            if (active) {
+                active.className = 'flex flex-col items-center justify-center min-w-[64px] h-20 rounded-2xl bg-primary text-white shadow-lg shadow-primary/25 border border-primary cursor-pointer shrink-0 transition-all';
+                active.children[0].className = 'text-xs font-medium opacity-80';
+            }
+        }
+
+        function selectTime(idx, timeStr) {
+            state.time = timeStr;
+            // Reset styles
+            for (let i = 0; i < 3; i++) {
+                const el = document.getElementById(`time-${i}`);
+                if (el) {
+                    el.className = 'flex items-center justify-center gap-2 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all';
+                }
+            }
+            // Set active
+            const active = document.getElementById(`time-${idx}`);
+            if (active) {
+                active.className = 'relative flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-sm transition-all';
+            }
+        }
+
+        // Map Logic
+        let map;
+        let currentCenter = {
+            lat: 37.7749,
+            lng: -122.4194
+        }; // SF default
+
+        function initMap() {
+            // Initial map load
+        }
+
+        function openMapModal() {
+            const modal = document.getElementById('map-modal');
+            const content = document.getElementById('map-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+
+            if (!map) {
+                map = new google.maps.Map(document.getElementById("google-map"), {
+                    center: currentCenter,
+                    zoom: 14,
+                    disableDefaultUI: true,
+                });
+
+                // Listen for drag end to update "center" visually
+                map.addListener("center_changed", () => {
+                    currentCenter = map.getCenter().toJSON();
+                });
+            }
+        }
+
+        function closeMapModal() {
+            const modal = document.getElementById('map-modal');
+            const content = document.getElementById('map-modal-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function confirmLocation() {
+            // In a real app we would use Reverse Geocoding API here
+            // For now, mock address based on lat/lng randomness to look real
+            const mockStreets = ['Main St', 'Mission St', 'Market St', 'Broadway', 'Union Square'];
+            const num = Math.floor(Math.random() * 900) + 100;
+            const street = mockStreets[Math.floor(Math.random() * mockStreets.length)];
+
+            state.lat = currentCenter.lat;
+            state.lng = currentCenter.lng;
+            state.address = `${num} ${street}, San Francisco`;
+
+            document.getElementById('selected-address').innerText = state.address;
+            closeMapModal();
+        }
+
+        function selectService(serviceId) {
+            state.service = serviceId;
+
+            // Toggle Sections
+            if (serviceId === 'wash-fold') {
+                document.getElementById('section-weight').classList.remove('hidden');
+                document.getElementById('section-items').classList.add('hidden');
+            } else {
+                document.getElementById('section-weight').classList.add('hidden');
+                document.getElementById('section-items').classList.remove('hidden');
+            }
+
+            // Update UI
+            document.getElementById('service-wash-fold').className = serviceId === 'wash-fold' ?
+                'group relative overflow-hidden rounded-xl bg-surface-light dark:bg-surface-dark p-1 shadow-lift border-2 border-primary cursor-pointer transition-all' :
+                'group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm';
+            document.getElementById('check-wash-fold').style.display = serviceId === 'wash-fold' ? 'block' : 'none';
+
+            document.getElementById('service-dry-clean').className = serviceId === 'dry-clean' ?
+                'group relative overflow-hidden rounded-xl bg-surface-light dark:bg-surface-dark p-1 shadow-lift border-2 border-primary cursor-pointer transition-all' :
+                'group relative overflow-hidden rounded-xl bg-white dark:bg-slate-800 p-1 border border-slate-100 dark:border-slate-700 hover:border-primary/50 cursor-pointer transition-all shadow-sm';
+            document.getElementById('check-dry-clean').style.display = serviceId === 'dry-clean' ? 'block' : 'none';
+
+            updateTotal();
+        }
+
+        function updateWeight(change) {
+            const newVal = Math.max(1, state.weight + change); // Allow going down to 1 visually, but calc might enforce min
+            state.weight = newVal;
+            document.getElementById('weight-display').innerText = state.weight;
+            updateTotal();
+        }
+
+        function updateQuantity(itemId, change) {
+            const current = state.items[itemId];
+            const newVal = Math.max(0, current + change);
+            state.items[itemId] = newVal;
+            document.getElementById(`qty-${itemId}`).textContent = newVal;
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+
+            if (state.service === 'wash-fold') {
+                // Min 3 KG rule
+                const billableWeight = Math.max(3, state.weight);
+                total = billableWeight * prices['wash-fold-kg'];
+            } else {
+                // Dry Clean
+                for (const [item, qty] of Object.entries(state.items)) {
+                    total += qty * prices[item];
+                }
+            }
+
+            document.getElementById('total-price').textContent = formatIDR(total);
+        }
+
+        document.getElementById('checkout-button').addEventListener('click', function () {
+            // Recalculate total for data integrity
+            let totalVal = 0;
+            if (state.service === 'wash-fold') {
+                totalVal = Math.max(3, state.weight) * prices['wash-fold-kg'];
+            } else {
+                for (const [item, qty] of Object.entries(state.items)) {
+                    totalVal += qty * prices[item];
+                }
+            }
+
+            if (state.address === 'Select Address') {
+                alert("Please select a pickup location.");
+                return;
+            }
+
+            // AUTH CHECK BEFORE CHECKOUT
+            if (!currentUser) {
+                if (confirm("You need to log in to place an order. Go to login?")) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            const uid = currentUser.id; // Valid UUID from Supabase
+            const email = currentUser.email;
+            const name = currentUser.user_metadata?.full_name || email;
+
+            const orderData = {
+                userId: uid,
+                userEmail: email,
+                userName: name,
+                service: state.service === 'wash-fold' ? 'Wash & Fold' : 'Dry Clean',
+                weight: state.service === 'wash-fold' ? state.weight : null,
+                items: state.service === 'dry-clean' ? state.items : {},
+                total: totalVal,
+                date: new Date().toISOString(),
+                schedule: `${state.date} at ${state.time}`,
+                address: state.address,
+                location: {
+                    lat: state.lat,
+                    lng: state.lng
+                },
+                status: 'Pending Payment'
+            };
+
+            localStorage.setItem('currentOrderDraft', JSON.stringify(orderData));
+            window.location.href = 'payment.html';
+        });
+
+        // Initialize
+        updateTotal();
+    </script>
+</body>
+
+</html>

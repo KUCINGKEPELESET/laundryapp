@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Production Timeline - Laundry App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "background-light": "#fcfdfd",
+                        "surface-light": "#f0f7f8",
+                        "urgent": "#ef4444",
+                        "normal": "#10b981",
+                        "warning": "#f59e0b",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 font-display text-slate-900 min-h-screen">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-3">
+                <button onclick="window.location.href='merchant_dashboard.html'"
+                    class="p-2 rounded-full hover:bg-slate-200 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold">Production Timeline</h1>
+                    <p class="text-sm text-slate-500">Prioritized work queue</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <span
+                    class="px-3 py-1 bg-urgent/10 text-urgent rounded-full text-xs font-bold border border-urgent/20">Urgent
+                    (< 1h)</span>
+                        <span
+                            class="px-3 py-1 bg-normal/10 text-normal rounded-full text-xs font-bold border border-normal/20">On
+                            Track</span>
+            </div>
+        </header>
+
+        <!-- Production List -->
+        <div class="space-y-4" id="production-list">
+            <!-- Injected via JS -->
+        </div>
+
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-slate-400">
+            <span class="material-symbols-outlined text-6xl mb-4 text-slate-300">check_circle</span>
+            <p class="text-lg font-bold">All caught up!</p>
+            <p class="text-sm">No orders currently in production.</p>
+        </div>
+
+    </div>
+
+    <!-- Production Workflow Modal -->
+    <div id="production-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeProductionModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden p-6"
+            id="modal-panel">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold">Manage Production</h3>
+                    <p class="text-sm text-slate-500 font-mono" id="modal-order-id">#ORD-123</p>
+                </div>
+                <button onclick="closeProductionModal()"
+                    class="size-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div id="modal-content" class="space-y-6">
+                <!-- Inputs -->
+                <!-- Inputs -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-bold text-slate-500 uppercase">Items Breakdown</label>
+                            <span class="text-xs font-bold text-primary" id="total-real-count">Total: 0</span>
+                        </div>
+                        <div id="items-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                            <!-- Dynamic Rows -->
+                        </div>
+                        <button onclick="addItemRow()"
+                            class="mt-2 text-xs font-bold text-primary flex items-center gap-1 hover:bg-primary/5 p-1 rounded transition-colors">
+                            <span class="material-symbols-outlined text-[16px]">add</span> Add Item
+                        </button>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Notes</label>
+                        <input type="text" id="input-notes"
+                            class="w-full rounded-lg border-slate-200 text-sm focus:border-primary focus:ring-primary"
+                            placeholder="Mixed colors, stains, etc.">
+                    </div>
+                </div>
+
+                <!-- Stages -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-3">Workflow Stages</label>
+                    <div class="space-y-2" id="stages-list">
+                        <!-- Injected -->
+                    </div>
+                </div>
+
+                <button onclick="saveProduction()"
+                    class="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30">
+                    Save Progress
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const NOW = new Date();
+
+        const formatIDR = (num) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(num);
+        };
+
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        const listContainer = document.getElementById('production-list');
+        const emptyState = document.getElementById('empty-state');
+
+        let currentOrderId = null;
+
+        const STAFF_MEMBERS = ['Ami', 'Budi', 'Caca', 'Dedi'];
+        const STAGES = ['Washing', 'Drying', 'Ironing/Folding', 'Packing'];
+
+        // Helper to check next stage
+        function getNextStage(current) {
+            const idx = STAGES.indexOf(current);
+            if (idx === -1) return STAGES[0]; // Start at Washing
+            if (idx < STAGES.length - 1) return STAGES[idx + 1];
+            return 'Ready for Delivery';
+        }
+
+        function getDeadline(order) {
+            const created = new Date(order.date || NOW.toISOString());
+            let due = new Date(created);
+            if (order.service === 'Wash & Fold') {
+                due.setHours(due.getHours() + 6);
+            } else {
+                due.setDate(due.getDate() + 3);
+            }
+            return due;
+        }
+
+        function getTimeRemaining(due) {
+            const diffMs = due - NOW;
+            const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+            if (diffMs < 0) return { text: 'Overdue', class: 'bg-slate-800 text-white', urgent: true };
+
+            if (diffHrs < 1) {
+                return { text: `Due in ${diffMins}m`, class: 'bg-urgent text-white', urgent: true };
+            } else if (diffHrs < 24) {
+                return { text: `Due in ${diffHrs}h ${diffMins}m`, class: 'bg-warning text-white', urgent: false };
+            } else {
+                const days = Math.floor(diffHrs / 24);
+                return { text: `Due in ${days}d ${diffHrs % 24}h`, class: 'bg-normal text-white', urgent: false };
+            }
+        }
+
+        function renderProduction() {
+            listContainer.innerHTML = '';
+
+            // Filter active production or specific stages
+            const inProgress = orders.filter(o =>
+                ['Washing', 'Drying', 'Ironing/Folding', 'Packing', 'Ironing'].includes(o.status)
+            );
+
+            if (inProgress.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            const withDeadline = inProgress.map(o => {
+                const due = getDeadline(o);
+                return { ...o, due, remaining: getTimeRemaining(due) };
+            });
+
+            withDeadline.sort((a, b) => a.due - b.due);
+
+            withDeadline.forEach(order => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md";
+
+                if (order.remaining.urgent) {
+                    div.classList.add('border-l-8', 'border-l-urgent');
+                } else {
+                    div.classList.add('border-l-8', 'border-l-normal');
+                }
+
+                let itemsText = order.service === 'Wash & Fold' ? `${order.weight} KG Laundry` : `${Object.values(order.items || {}).reduce((a, b) => a + b, 0)} Items (Dry Clean)`;
+
+                // Show current assigned staff for the current stage if mapped
+                let currentStageStaff = 'Unassigned';
+                if (order.productionLogs && order.productionLogs[order.status]) {
+                    currentStageStaff = order.productionLogs[order.status].staff;
+                }
+
+                div.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="font-mono font-bold text-slate-500 text-sm">#${order.id}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${order.remaining.class}">
+                                ${order.remaining.text}
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900">${itemsText}</h3>
+                         <div class="flex items-center gap-4 text-sm text-slate-500 mt-2">
+                             <div class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">schedule</span>
+                                <span>Since: ${new Date(order.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                             <span class="block text-xs font-bold text-slate-400 uppercase">Current Stage</span>
+                             <span class="block font-bold text-primary">${order.status}</span>
+                             <span class="text-xs text-slate-400">Staff: ${currentStageStaff}</span>
+                        </div>
+                        <button onclick="openProductionModal('${order.id}')" class="px-4 py-2 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                            Manage
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        // --- Production Modal Logic ---
+
+        // --- Production Modal Logic ---
+
+        function openProductionModal(id) {
+            currentOrderId = id;
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+
+            document.getElementById('modal-order-id').innerText = '#' + order.id;
+            document.getElementById('input-notes').value = order.productionNotes || '';
+
+            // Clear and populate items
+            const container = document.getElementById('items-list');
+            container.innerHTML = '';
+
+            const savedItems = order.productionItems || [];
+            if (savedItems.length > 0) {
+                savedItems.forEach(item => addItemRow(item.type, item.qty));
+            } else {
+                addItemRow(); // Default empty row
+            }
+            updateTotalRealCount();
+
+            renderStagesList(order);
+
+            document.getElementById('production-modal').classList.remove('hidden');
+        }
+
+        function closeProductionModal() {
+            document.getElementById('production-modal').classList.add('hidden');
+            currentOrderId = null;
+        }
+
+        function addItemRow(type = '', qty = '') {
+            const container = document.getElementById('items-list');
+            const row = document.createElement('div');
+            row.className = "flex gap-2 items-center";
+            row.innerHTML = `
+                <input type="text" placeholder="Item Type (e.g. Shirt)" value="${type}" class="item-type flex-1 rounded-lg border-slate-200 text-sm focus:border-primary focus:ring-primary px-3 py-2">
+                <input type="number" placeholder="Qty" value="${qty}" oninput="updateTotalRealCount()" class="item-qty w-20 rounded-lg border-slate-200 text-sm focus:border-primary focus:ring-primary px-3 py-2">
+                <button onclick="this.parentElement.remove(); updateTotalRealCount()" class="text-slate-400 hover:text-red-500">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+            `;
+            container.appendChild(row);
+        }
+
+        function updateTotalRealCount() {
+            const qtys = document.querySelectorAll('.item-qty');
+            let total = 0;
+            qtys.forEach(input => {
+                total += parseInt(input.value) || 0;
+            });
+            document.getElementById('total-real-count').innerText = `Total: ${total}`;
+        }
+
+        function renderStagesList(order) {
+            const container = document.getElementById('stages-list');
+            container.innerHTML = '';
+
+            STAGES.forEach(stage => {
+                const logs = order.productionLogs || {};
+                const stageData = logs[stage] || { done: false, staff: '' };
+                const isDone = stageData.done;
+
+                let staffOptions = `<option value="" disabled ${!stageData.staff ? 'selected' : ''}>Select Staff</option>`;
+                STAFF_MEMBERS.forEach(s => {
+                    staffOptions += `<option value="${s}" ${stageData.staff === s ? 'selected' : ''}>${s}</option>`;
+                });
+
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl border ${isDone ? 'bg-green-50 border-green-200' : 'bg-white border-slate-200'} flex items-center justify-between transition-all`;
+
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="size-6 rounded-full border-2 flex items-center justify-center ${isDone ? 'border-green-500 bg-green-500 text-white' : 'border-slate-300 text-transparent'}">
+                            <span class="material-symbols-outlined text-[16px]">check</span>
+                        </div>
+                        <span class="font-bold text-sm ${isDone ? 'text-green-800' : 'text-slate-700'}">${stage}</span>
+                    </div>
+                    <div>
+                        <select id="staff-${stage.replace(/\W/g, '')}" onchange="updateStageData('${stage}')" class="text-xs border-slate-200 rounded-lg py-1 pr-8 focus:ring-primary focus:border-primary disabled:opacity-50" ${isDone ? 'disabled' : ''}>
+                            ${staffOptions}
+                        </select>
+                        ${!isDone ? `<button onclick="completeStage('${stage}')" class="ml-2 text-xs font-bold text-primary hover:underline">Done</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateStageData(stage) {
+            // Placeholder for any immediate changes
+        }
+
+        function completeStage(stage) {
+            const selectorId = `staff-${stage.replace(/\W/g, '')}`;
+            const staffSelect = document.getElementById(selectorId);
+            const staff = staffSelect.value;
+
+            if (!staff) {
+                alert("Please select a staff member for this stage.");
+                return;
+            }
+
+            const orderIndex = orders.findIndex(o => o.id === currentOrderId);
+            if (orderIndex === -1) return;
+
+            const order = orders[orderIndex];
+            if (!order.productionLogs) order.productionLogs = {};
+
+            order.productionLogs[stage] = { done: true, staff: staff };
+
+            if (stage === 'Packing') {
+                order.status = 'Ready for Delivery';
+            } else {
+                order.status = getNextStage(stage);
+            }
+
+            saveDetailsExample(order); // Auto-save detailed items state
+            saveOrder(order);
+        }
+
+        function saveProduction() {
+            const orderIndex = orders.findIndex(o => o.id === currentOrderId);
+            if (orderIndex === -1) return;
+
+            const order = orders[orderIndex];
+            saveDetailsExample(order);
+            saveOrder(order);
+            closeProductionModal();
+        }
+
+        function saveDetailsExample(order) {
+            order.productionNotes = document.getElementById('input-notes').value;
+
+            const items = [];
+            const rows = document.getElementById('items-list').children;
+            let totalCount = 0;
+            for (let row of rows) {
+                const type = row.querySelector('.item-type').value;
+                const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+                if (type || qty > 0) {
+                    items.push({ type, qty });
+                    totalCount += qty;
+                }
+            }
+            order.productionItems = items;
+            order.productionCount = totalCount;
+        }
+
+        function saveOrder(order) {
+            const index = orders.findIndex(o => o.id === order.id);
+            if (index !== -1) {
+                orders[index] = order;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                // Re-render
+                if (currentOrderId && !document.getElementById('production-modal').classList.contains('hidden')) {
+                    renderStagesList(order);
+                }
+                renderProduction();
+            }
+        }
+
+
+        renderProduction();
+
+    </script>
+</body>
+
+</html>

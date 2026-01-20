@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Order Tracking Status</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "background-light": "#fcfdfd",
+                        "background-dark": "#1a2128",
+                        "surface-light": "#EBF5F6",
+                        "surface-dark": "#242c33",
+                        "accent-warm": "#FFB4A2",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "float": "0 -10px 40px -10px rgba(0, 0, 0, 0.1)",
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+</head>
+
+<body
+    class="bg-gray-100 dark:bg-gray-900 font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden flex justify-center items-center min-h-screen">
+    <div
+        class="relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark sm:rounded-3xl sm:h-[calc(100vh-2rem)] shadow-2xl">
+        <!-- Header Overlay -->
+        <div
+            class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 pt-12 pb-4 pointer-events-none">
+            <button onclick="window.location.href='dashboard.html'"
+                class="pointer-events-auto flex size-10 items-center justify-center rounded-full bg-white/90 dark:bg-black/40 backdrop-blur-sm shadow-sm text-slate-800 dark:text-white transition-transform hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
+            </button>
+            <div
+                class="pointer-events-auto px-4 py-2 bg-white/90 dark:bg-black/40 backdrop-blur-sm rounded-full shadow-sm">
+                <h2 class="text-sm font-bold tracking-tight text-slate-800 dark:text-white" id="order-id-display">Order
+                    #...</h2>
+            </div>
+            <button
+                class="pointer-events-auto flex size-10 items-center justify-center rounded-full bg-white/90 dark:bg-black/40 backdrop-blur-sm shadow-sm text-slate-800 dark:text-white transition-transform hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+            </button>
+        </div>
+        <!-- Map Section -->
+        <div class="relative h-[45vh] w-full shrink-0">
+            <!-- Map Background Image -->
+            <div class="absolute inset-0 bg-cover bg-center" data-alt="Map showing city streets and route"
+                data-location="San Francisco"
+                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDEFOJ74CeOcgobKKNIoS4DfYmqLln1IrDrIpokBCSj2cTB-LWTxjS1wlN9iqbFK5DrYAZJEuiOp9AhPwZNLG5zO-9Zt_3dYxMNkFyZD4lmIQSquk7ByghTkd_ih5xAgjrkDsPUZF-ueE2InDv6HUfiHT_PWsHOaWuADjcd4xBgl5LisQFekT19rUR7C0tNBXdTYz25czyJDDtDbH_5R5bmb_ptzRAZ1EroaHi0V8K3e8gJApJHxCrynm0qZ_ztF4BN4hur9PpqzHCq");'>
+            </div>
+            <!-- Map Overlay Gradient for better text readability at top -->
+            <div
+                class="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-transparent dark:from-black/60 pointer-events-none">
+            </div>
+            <!-- Animated Driver Marker -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute size-16 rounded-full bg-primary/20 animate-ping"></div>
+                    <div
+                        class="relative z-10 flex size-10 items-center justify-center rounded-full bg-primary border-2 border-white dark:border-slate-800 shadow-lg text-white">
+                        <span class="material-symbols-outlined text-[20px]">local_laundry_service</span>
+                    </div>
+                </div>
+                <div
+                    class="mt-2 rounded-lg bg-white/95 dark:bg-slate-800/95 px-3 py-1 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-md backdrop-blur-sm">
+                    5 min away
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Sheet / Content Area -->
+        <div
+            class="relative -mt-6 flex flex-1 flex-col rounded-t-3xl bg-background-light dark:bg-background-dark shadow-float overflow-hidden z-10">
+            <!-- Sheet Handle -->
+            <div class="flex w-full items-center justify-center pt-3 pb-1">
+                <div class="h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+            </div>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto no-scrollbar px-6 pb-6 pt-2">
+                <!-- Headline & ETA -->
+                <div class="mb-8 flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <span
+                            class="inline-flex items-center rounded-full bg-accent-warm/20 px-3 py-1 text-xs font-bold text-[#D65A31] dark:text-[#FFB4A2]">
+                            <span
+                                class="mr-1.5 size-1.5 rounded-full bg-[#D65A31] dark:bg-[#FFB4A2] animate-pulse"></span>
+                            On The Way
+                        </span>
+                        <span class="text-xs font-medium text-slate-400">Updated 1m ago</span>
+                    </div>
+                    <h1 class="text-2xl font-bold leading-tight text-slate-900 dark:text-white">
+                        Arriving Today, <span class="text-primary">4:00 PM</span>
+                    </h1>
+                </div>
+                <!-- Driver Card -->
+                <div
+                    class="mb-8 rounded-2xl bg-surface-light dark:bg-surface-dark p-4 shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="relative size-12 shrink-0 overflow-hidden rounded-full border-2 border-white dark:border-slate-600 shadow-sm"
+                                data-alt="Portrait of the delivery driver Ralph"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuArakNJfjZFEyRzoLrScPzPa9-Gb50_pd9ayNRRArnl8C9MMQLE3n_H4FFRaXBqxKMMVtjr-BqiA1JcIsWTmXDHF55bcRDoLhSHm3MP9DPPPGDMcldGWW8kecY-XAL7Fs8UaS7SAHlMs8lZjlSD-dhvhlvxLSGXkmE7IlJK-zHI6-7nSJJuq5JhQH0F60SWcJ6eizgFkSplJWKtwqQEFe3mLSB5UDEBWM0V6MfyrI3q3iPCni2xKa9uPNxhzuDll348cNh6p9RrdstJ"); background-size: cover; background-position: center;'>
+                            </div>
+                            <div class="flex flex-col">
+                                <p class="text-base font-bold text-slate-900 dark:text-white">Ralph</p>
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center text-yellow-500">
+                                        <span class="material-symbols-outlined text-[14px] fill-current">star</span>
+                                        <span class="ml-0.5 font-semibold text-slate-700 dark:text-slate-300">4.9</span>
+                                    </div>
+                                    <span>•</span>
+                                    <span>White Van</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            class="flex size-10 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-600">
+                            <span class="material-symbols-outlined text-[20px]">call</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Timeline / Stepper -->
+                <div class="relative pl-2">
+                    <!-- Connecting Vertical Line (Background) -->
+                    <div class="absolute left-[19px] top-4 bottom-4 w-[2px] bg-slate-100 dark:bg-slate-800"></div>
+                    <!-- Step 1: Completed -->
+                    <div class="group relative mb-8 grid grid-cols-[40px_1fr] gap-x-4">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div
+                                class="z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-soft">
+                                <span class="material-symbols-outlined text-[20px]">check</span>
+                            </div>
+                            <!-- Connector (Active) -->
+                            <div class="absolute top-10 bottom-[-32px] w-[2px] bg-primary"></div>
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">Request Received</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Oct 24, 9:00 AM</p>
+                        </div>
+                    </div>
+                    <!-- Step 2: Completed -->
+                    <div class="group relative mb-8 grid grid-cols-[40px_1fr] gap-x-4">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div
+                                class="z-10 flex size-10 items-center justify-center rounded-full bg-primary text-white shadow-soft">
+                                <span class="material-symbols-outlined text-[20px]">check</span>
+                            </div>
+                            <!-- Connector (Active) -->
+                            <div class="absolute top-10 bottom-[-32px] w-[2px] bg-primary"></div>
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">Picked Up</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Oct 24, 10:30 AM</p>
+                        </div>
+                    </div>
+                    <!-- Step 3: Current (Active) -->
+                    <div class="group relative mb-8 grid grid-cols-[40px_1fr] gap-x-4">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div
+                                class="z-10 flex size-10 items-center justify-center rounded-full border-[3px] border-primary bg-white dark:bg-slate-800 dark:border-primary shadow-[0_0_0_4px_rgba(0,110,122,0.15)]">
+                                <div class="size-2.5 rounded-full bg-primary animate-pulse"></div>
+                            </div>
+                            <!-- Connector (Inactive) -->
+                            <!-- No background color here means it shows the underlying gray line -->
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-base font-bold text-primary">In Process</p>
+                            <p class="text-sm font-medium text-slate-600 dark:text-slate-300">Cleaning clothes...</p>
+                            <!-- Sub-step detail pill -->
+                            <div
+                                class="mt-3 inline-flex items-center gap-2 rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+                                <span
+                                    class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                                Washing Cycle: 45m remaining
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Step 4: Future -->
+                    <div class="group relative mb-8 grid grid-cols-[40px_1fr] gap-x-4 opacity-50">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div
+                                class="z-10 flex size-10 items-center justify-center rounded-full border-2 border-slate-200 bg-white dark:bg-background-dark dark:border-slate-700 text-slate-300 dark:text-slate-600">
+                                <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                            </div>
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-sm font-medium text-slate-900 dark:text-white">Ready for Delivery</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Pending</p>
+                        </div>
+                    </div>
+                    <!-- Step 5: Future -->
+                    <div class="group relative grid grid-cols-[40px_1fr] gap-x-4 opacity-50">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div
+                                class="z-10 flex size-10 items-center justify-center rounded-full border-2 border-slate-200 bg-white dark:bg-background-dark dark:border-slate-700 text-slate-300 dark:text-slate-600">
+                                <span class="material-symbols-outlined text-[20px]">home_pin</span>
+                            </div>
+                        </div>
+                        <div class="pt-2">
+                            <p class="text-sm font-medium text-slate-900 dark:text-white">Delivered</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Action -->
+                <div class="mt-8 pb-4">
+                    <button
+                        class="w-full rounded-xl bg-slate-100 dark:bg-slate-800 py-3 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                        View Order Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDetailsModal()"></div>
+        <div
+            class="absolute bottom-0 left-0 right-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md sm:h-auto sm:rounded-2xl rounded-t-3xl bg-white dark:bg-surface-dark shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-700">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Order Details</h3>
+                <button onclick="closeDetailsModal()"
+                    class="size-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-300">close</span>
+                </button>
+            </div>
+            <div id="modal-content" class="p-6 overflow-y-auto space-y-6">
+                <!-- Injected Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        // 1. Get Loading Data
+        const params = new URLSearchParams(window.location.search);
+        const orderIdParam = params.get('id');
+
+        if (!orderIdParam) {
+            alert("No Order ID provided.");
+            window.location.href = 'dashboard.html';
+        }
+
+        async function fetchOrder() {
+            const { data: order, error } = await window.sb
+                .from('orders')
+                .select('*')
+                .eq('id', orderIdParam)
+                .single();
+
+            if (error) {
+                console.error("Error fetching order:", error);
+                // If error is PGRST116 (0 rows), then order not found
+                if (error.code === 'PGRST116') {
+                    alert("Order not found");
+                    window.location.href = 'dashboard.html';
+                }
+                return;
+            }
+
+            if (order) {
+                renderPage(order);
+            }
+        }
+
+        // Initial fetch
+        fetchOrder();
+
+        // Poll for updates (Realtime tracking)
+        setInterval(fetchOrder, 5000); // 5 seconds interval
+
+
+        function renderPage(currentOrder) {
+            // 2. Update Header Info
+            document.getElementById('order-id-display').textContent = '#' + currentOrder.id;
+
+            // 3. Status Mapping Logic
+            const steps = [
+                { status: ['Paid', 'Request Received', 'Pickup Assigned'], title: 'Order Placed', icon: 'receipt_long' },
+                { status: ['Washing', 'Ironing', 'Drying', 'Ironing/Folding', 'Packing', 'Processing', 'Ready for Delivery'], title: 'Cleaning', icon: 'local_laundry_service' },
+                { status: ['Out for Delivery'], title: 'On The Way', icon: 'local_shipping' },
+                { status: ['Completed'], title: 'Delivered', icon: 'check_circle' }
+            ];
+
+            let currentStepIndex = 0;
+
+            // Find which step is active (Simpler logic)
+            const s = currentOrder.status;
+            if (['Paid', 'Request Received', 'Pickup Assigned'].includes(s)) currentStepIndex = 0;
+            else if (['Washing', 'Ironing', 'Drying', 'Ironing/Folding', 'Packing', 'Processing', 'Ready for Delivery'].includes(s)) currentStepIndex = 1;
+            else if (['Out for Delivery'].includes(s)) currentStepIndex = 2;
+            else if (['Completed'].includes(s)) currentStepIndex = 3;
+
+            // Visual Updates
+            const timelineContainer = document.querySelector('.relative.pl-2');
+
+            let timelineHTML = `
+            <div class="absolute left-[19px] top-4 bottom-4 w-[2px] bg-slate-100 dark:bg-slate-800"></div>
+            `;
+
+            steps.forEach((step, index) => {
+                const isCompleted = index < currentStepIndex;
+                const isCurrent = index === currentStepIndex;
+                const isPending = index > currentStepIndex;
+
+                let iconBgClass = isPending ? 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-300' : (isCompleted ? 'bg-primary text-white' : 'bg-white border-2 border-primary text-primary');
+                if (isCurrent && index === 0) iconBgClass = 'bg-primary text-white'; // First step active style
+                if (isCurrent && index !== 0) iconBgClass = 'bg-white border-2 border-primary text-primary';
+
+                // Line connector logic
+                let lineHTML = '';
+                if (index < steps.length - 1) {
+                    if (isCompleted) {
+                        lineHTML = `<div class="absolute top-10 bottom-[-32px] w-[2px] bg-primary"></div>`;
+                    }
+                }
+
+                timelineHTML += `
+                    <div class="group relative mb-8 grid grid-cols-[40px_1fr] gap-x-4">
+                        <div class="relative flex h-full flex-col items-center">
+                            <div class="z-10 flex size-10 items-center justify-center rounded-full shadow-soft ${iconBgClass}">
+                                <span class="material-symbols-outlined text-[20px]">${step.icon}</span>
+                            </div>
+                            ${lineHTML}
+                        </div>
+                        <div class="pt-2">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white ${isPending ? 'opacity-50' : ''}">${step.title}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 ${isPending ? 'hidden' : 'block'}">
+                            ${isCurrent ? 'In Progress' : (isCompleted ? 'Completed' : 'Pending')}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (timelineContainer) timelineContainer.innerHTML = timelineHTML;
+
+            const statusPill = document.querySelector('.inline-flex.items-center.rounded-full');
+            if (statusPill) {
+                statusPill.innerHTML = `
+                    <span class="mr-1.5 size-1.5 rounded-full bg-[#D65A31] dark:bg-[#FFB4A2] animate-pulse"></span>
+                    ${currentOrder.status}
+                `;
+            }
+
+            // Bind View Details button
+            const viewBtn = document.querySelector('button.w-full.rounded-xl.bg-slate-100');
+            if (viewBtn) {
+                viewBtn.onclick = () => openDetailsModal(currentOrder);
+                viewBtn.innerText = "View Full Details";
+            }
+        }
+
+        // --- Order Details Modal Logic ---
+
+        function getDeadline(order) {
+            const created = new Date(order.date || new Date().toISOString());
+            let due = new Date(created);
+            if (order.service === 'Wash & Fold') {
+                due.setHours(due.getHours() + 6);
+            } else {
+                due.setDate(due.getDate() + 3);
+            }
+            return due;
+        }
+
+        function openDetailsModal(o) {
+            const container = document.getElementById('modal-content');
+
+            // 1. Estimated Completion
+            const eta = getDeadline(o);
+            const etaString = eta.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + eta.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // 2. Driver Info
+            let driverHtml = '';
+            if (o.driver) {
+                // If Out for Delivery, show as Courier. Else Pickup.
+                const role = o.status === 'Out for Delivery' ? 'Delivery Courier' : 'Pickup Driver';
+                driverHtml = `
+                    <div class="bg-surface-light dark:bg-slate-800 p-4 rounded-xl flex items-center gap-4">
+                        <div class="size-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                                <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold uppercase text-slate-500 tracking-wider">${role}</p>
+                            <p class="font-bold text-slate-900 dark:text-white">${o.driver.name}</p>
+                            <p class="text-sm text-slate-500">${o.driver.phone}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 3. Evidence
+            let evidenceHtml = '';
+            if (o.evidence) {
+                // Mock image since we don't have real URL storage
+                evidenceHtml = `
+                    <div class="space-y-2">
+                        <p class="text-xs font-bold uppercase text-slate-500 tracking-wider">Laundry Accepted</p>
+                        <div class="h-32 w-full bg-slate-100 rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300">
+                            <div class="flex flex-col items-center text-slate-400">
+                                <span class="material-symbols-outlined">image</span>
+                                <span class="text-xs">Evidence Photo</span>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+            }
+
+            // 4. Production Details
+            let productionHtml = '';
+            if (o.productionItems && o.productionItems.length > 0) {
+                const itemsList = o.productionItems.map(i =>
+                    `<div class="flex justify-between text-sm py-1 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                        <span class="text-slate-600 dark:text-slate-300">${i.type}</span>
+                        <span class="font-bold text-slate-900 dark:text-white">x${i.qty}</span>
+                    </div>`
+                ).join('');
+
+                productionHtml = `
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-xs font-bold uppercase text-blue-600 dark:text-blue-400 tracking-wider">Production Output</p>
+                            <span class="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">${o.productionCount || 0} Pcs Total</span>
+                        </div>
+                        <div class="mb-3">
+                            ${itemsList}
+                        </div>
+                        ${o.productionNotes ? `<p class="text-sm text-blue-800 dark:text-blue-200 italic border-l-2 border-blue-300 pl-2">"${o.productionNotes}"</p>` : ''}
+                        
+                        <!-- Stages History -->
+                            <div class="mt-4 flex gap-1 justify-between">
+                            ${renderStagePill('Washing', o)}
+                            ${renderStagePill('Drying', o)}
+                            ${renderStagePill('Ironing/Folding', o)} 
+                        </div>
+                    </div>
+                    `;
+            } else if (o.weight) {
+                // Fallback for simple Wash & Fold without detailed production yet
+                productionHtml = `
+                    <div class="bg-surface-light dark:bg-slate-800 p-4 rounded-xl">
+                        <p class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-1">Service Details</p>
+                        <p class="font-bold text-lg text-slate-900 dark:text-white">${o.weight} KG (Wash & Fold)</p>
+                    </div>
+                    `;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <!-- ETA -->
+                    <div class="text-center">
+                        <p class="text-sm text-slate-500">Estimated Completion</p>
+                        <p class="text-2xl font-bold text-primary">${etaString}</p>
+                    </div>
+                    
+                    ${driverHtml}
+                    ${productionHtml}
+                    ${evidenceHtml}
+                    
+                    <!-- Original Request Summary -->
+                        <div class="border-t border-slate-100 dark:border-slate-700 pt-4">
+                        <p class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">Original Request</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-600 dark:text-slate-300">Total Billed</span>
+                            <span class="font-bold text-lg text-slate-900 dark:text-white">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(o.total)}</span>
+                        </div>
+                            <p class="text-xs text-slate-400 mt-1">${o.id} • ${o.schedule}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('details-modal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('details-modal').classList.add('hidden');
+        }
+
+        function renderStagePill(stage, order) {
+            let isDone = false;
+            const logs = order.productionLogs || {};
+
+            if (logs[stage] && logs[stage].done) isDone = true;
+            if (stage.includes('/')) {
+                const parts = stage.split('/');
+                if ((logs[parts[0]] && logs[parts[0]].done) || (logs[parts[1]] && logs[parts[1]].done)) isDone = true;
+            }
+
+            return `
+                <div class="flex flex-col items-center gap-1 opacity-${isDone ? '100' : '30'}">
+                    <div class="size-6 rounded-full ${isDone ? 'bg-green-500 text-white' : 'bg-slate-200 text-slate-400'} flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[14px]">check</span>
+                    </div>
+                    <span class="text-[10px] uppercase font-bold text-slate-500">${stage.split('/')[0]}</span>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

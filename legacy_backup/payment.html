@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Payment - Laundry App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#006e7a",
+                        "background-light": "#fcfdfd",
+                        "background-dark": "#1a2128",
+                        "surface-light": "#EBF5F6",
+                        "surface-dark": "#24343d",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "3xl": "1.5rem",
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gray-100 dark:bg-gray-900 font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden flex justify-center items-center min-h-screen">
+    <div
+        class="relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark sm:rounded-3xl sm:h-[calc(100vh-2rem)] shadow-2xl">
+
+        <!-- Header -->
+        <header class="flex items-center gap-4 p-5 pt-8">
+            <button onclick="window.history.back()"
+                class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="text-xl font-bold">Checkout</h1>
+        </header>
+
+        <!-- Content -->
+        <main class="flex-1 px-6 pt-4 flex flex-col gap-6 overflow-y-auto">
+            <!-- Order Summary -->
+            <section class="rounded-2xl bg-surface-light dark:bg-surface-dark p-5">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Order Summary</h2>
+
+                <div class="flex flex-col gap-3 mb-4" id="order-items-container">
+                    <!-- Items injected by JS -->
+                </div>
+
+                <div class="h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
+
+                <div class="flex justify-between items-center py-1">
+                    <span class="text-slate-500">Service Fee</span>
+                    <span class="font-semibold">$2.00</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                    <span class="text-slate-500">Tax</span>
+                    <span class="font-semibold" id="tax-amount">$0.00</span>
+                </div>
+
+                <div class="h-px bg-slate-200 dark:bg-slate-700 my-2"></div>
+
+                <div class="flex justify-between items-center text-lg font-bold">
+                    <span>Total</span>
+                    <span class="text-primary" id="total-display">$0.00</span>
+                </div>
+            </section>
+
+            <!-- Payment Method -->
+            <section>
+                <h2 class="text-lg font-bold mb-3">Payment Method</h2>
+                <div class="flex flex-col gap-3">
+                    <label
+                        class="flex items-center gap-4 p-4 rounded-xl border-2 border-primary bg-primary/5 cursor-pointer">
+                        <input type="radio" name="payment" checked class="text-primary focus:ring-primary">
+                        <div class="flex-1 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="material-symbols-outlined text-slate-700 dark:text-white">credit_card</span>
+                                <span class="font-bold">Apple Pay</span>
+                            </div>
+                            <span class="material-symbols-outlined text-primary fill-1">check_circle</span>
+                        </div>
+                    </label>
+
+                    <label
+                        class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800">
+                        <input type="radio" name="payment" class="text-primary focus:ring-primary">
+                        <div class="flex-1 flex items-center gap-3">
+                            <span
+                                class="material-symbols-outlined text-slate-700 dark:text-white">account_balance_wallet</span>
+                            <span class="font-bold">Wallet Balance ($12.50)</span>
+                        </div>
+                    </label>
+                </div>
+            </section>
+        </main>
+
+        <!-- Pay Button -->
+        <div
+            class="p-6 pb-8 bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-slate-800">
+            <button id="pay-now-btn"
+                class="w-full bg-primary hover:bg-primary/90 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+                <span class="material-symbols-outlined">lock</span>
+                Pay Now
+            </button>
+        </div>
+
+        <!-- Debug Log -->
+        <div id="debug-log"
+            class="hidden p-4 bg-black text-green-400 font-mono text-xs overflow-y-auto max-h-40 border-t border-gray-700">
+            <p class="font-bold mb-1">Debug Console:</p>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        // --- Debug Logger ---
+        const log = (msg) => {
+            console.log(msg);
+            const el = document.getElementById('debug-log');
+            if (el) {
+                el.classList.remove('hidden');
+                const p = document.createElement('div');
+                p.className = 'mb-1 border-b border-gray-800 pb-1';
+                p.innerText = `> ${msg}`;
+                el.appendChild(p);
+                el.scrollTop = el.scrollHeight;
+            }
+        };
+
+        log("Initializing Supabase...");
+        if (!window.sb) {
+            log("Error: Supabase client (window.sb) not found.");
+        } else {
+            log("Supabase client found.");
+        }
+
+        // Format IDR helper
+        const formatIDR = (num) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(num);
+        };
+
+        log("Loading draft...");
+        // Load Order Draft
+        let draft = null;
+        try {
+            draft = JSON.parse(localStorage.getItem('currentOrderDraft'));
+            if (draft) log("Draft loaded OK.");
+            else log("Draft is NULL.");
+        } catch (e) {
+            log("Draft syntax error: " + e.message);
+        }
+
+        if (!draft) {
+            log("Redirecting to dashboard...");
+            // alert("No order found. Redirecting to home.");
+            // window.location.href = 'dashboard.html';
+        } else {
+            // Render Summary
+            const container = document.getElementById('order-items-container');
+
+            // Service Line or Details
+            if (draft.service === 'Wash & Fold' || draft.service === 'Wash & Fold') { // Handle both cases just in case
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center';
+                div.innerHTML = `<span class="font-medium">Wash & Fold (${draft.weight} kg)</span><span class="text-slate-500">${formatIDR(draft.total)}</span>`;
+                container.appendChild(div);
+            } else {
+                // Use Dry Clean Logic
+                for (const [item, qty] of Object.entries(draft.items)) {
+                    if (qty > 0) {
+                        const div = document.createElement('div');
+                        div.className = 'flex justify-between items-center';
+                        const name = item.charAt(0).toUpperCase() + item.slice(1);
+                        div.innerHTML = `<span class="font-medium">${qty}x ${name}</span><span class="text-slate-500">Item</span>`;
+                        container.appendChild(div);
+                    }
+                }
+            }
+
+            // Handling Fees/Tax
+            document.getElementById('tax-amount').textContent = 'Rp 0';
+            document.querySelector('.text-slate-500').textContent = 'Service Fee';
+            document.querySelectorAll('.font-semibold')[0].textContent = 'Included'; // Service Fee
+
+            const finalTotal = draft.total; // Use total directly
+            document.getElementById('total-display').innerText = formatIDR(finalTotal);
+        }
+
+        document.querySelector('span.font-bold').textContent = "Wallet Balance (Rp 500.000)";
+
+
+        // Handle Payment
+        document.getElementById('pay-now-btn').addEventListener('click', function () {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
+
+            log("Processing clicked...");
+
+            setTimeout(async () => {
+                try {
+                    if (!draft) throw new Error("Draft data missing during payment execution.");
+
+                    // Generate ID
+                    const orderId = 'ORD-' + Math.floor(Math.random() * 100000);
+                    log("ID Generated: " + orderId);
+
+                    // Clean draft of undefined values just in case
+                    const cleanDraft = JSON.parse(JSON.stringify(draft));
+                    log("Draft sanitized.");
+
+                    // --- SUPABASE AUTH CHECK ---
+                    log("Verifying User Session...");
+                    const { data: { user }, error: authError } = await window.sb.auth.getUser();
+
+                    if (authError || !user) {
+                        throw new Error("You must be logged in to pay. Please log in again.");
+                    }
+
+                    const realUserId = user.id;
+                    const realUserEmail = user.email;
+                    log("Auth Confirmed. User ID: " + realUserId);
+
+                    // Map to Supabase Schema (Snake Case)
+                    const finalOrder = {
+                        id: orderId,
+                        user_id: realUserId, // Use Verified ID (UUID)
+                        user_email: realUserEmail,
+                        user_name: cleanDraft.userName,
+                        service: cleanDraft.service,
+                        weight: cleanDraft.weight,
+                        items: cleanDraft.items, // JSONB
+                        total: cleanDraft.total,
+                        schedule: cleanDraft.schedule,
+                        address: cleanDraft.address,
+                        location: cleanDraft.location, // JSONB
+                        status: 'Paid',
+                        created_at: new Date().toISOString()
+                    };
+
+                    log("Payload ready. Keys: " + Object.keys(finalOrder).join(", "));
+                    log("Attempting Supabase Insert...");
+
+                    const { data, error } = await window.sb
+                        .from('orders')
+                        .insert([finalOrder])
+                        .select();
+
+                    if (error) {
+                        throw new Error("Supabase Error: " + error.message + " (" + error.code + ")");
+                    }
+
+                    log("Write SUCCEEDED! Data: " + (data ? "OK" : "No Data"));
+
+                    // Clear draft
+                    localStorage.removeItem('currentOrderDraft');
+
+                    // Redirect
+                    log("Redirecting...");
+                    window.location.href = `order_tracking.html?id=${orderId}`;
+                } catch (error) {
+                    log("ERROR: " + error.message);
+                    console.error("Error saving order: ", error);
+                    alert("Failed: " + error.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-symbols-outlined">lock</span> Pay Now';
+                }
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
