@@ -71,6 +71,10 @@ const Receipt = () => {
             return;
         }
         setShowDeviceModal(true);
+        listPairedDevices();
+    };
+
+    const listPairedDevices = () => {
         setIsScanning(true);
         window.bluetoothSerial.list(
             (devices) => {
@@ -78,12 +82,24 @@ const Receipt = () => {
                 setIsScanning(false);
             },
             (err) => {
+                // Even if list fails, we stop scanning
+                setIsScanning(false);
+            }
+        );
+    };
+
+    const scanUnpairedDevices = () => {
+        setIsScanning(true);
+        setNativeDevices([]); // Clear list to show we are searching fresh
+        window.bluetoothSerial.discoverUnpaired(
+            (devices) => {
+                setNativeDevices(devices);
+                setIsScanning(false);
+            },
+            (err) => {
                 console.error(err);
                 setIsScanning(false);
-                // Try strictly discovering if list is empty or failed? 
-                // Usually list() gets paired devices. discoverUnpaired() is slower.
-                // Stick to paired for now.
-                alert("Could not list paired devices. Please pair your printer in Android Settings first.");
+                alert("Scan failed: " + err);
             }
         );
     };
@@ -297,22 +313,33 @@ const Receipt = () => {
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 font-sans print:hidden">
                     <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
                         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 className="font-bold text-lg">Select Printer</h3>
-                            <button onClick={() => setShowDeviceModal(false)} className="size-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600">
-                                <span className="material-symbols-outlined">close</span>
-                            </button>
+                            <div>
+                                <h3 className="font-bold text-lg">Select Printer</h3>
+                                <p className="text-[10px] text-slate-500">Tap to connect</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <button onClick={scanUnpairedDevices} disabled={isScanning} className="size-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200" title="Scan for new devices">
+                                    <span className={`material-symbols-outlined text-sm ${isScanning ? 'animate-spin' : ''}`}>refresh</span>
+                                </button>
+                                <button onClick={() => setShowDeviceModal(false)} className="size-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600">
+                                    <span className="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
                         </div>
                         <div className="p-4 max-h-[300px] overflow-y-auto">
                             {isScanning ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-gray-400">
                                     <span className="material-symbols-outlined animate-spin text-3xl mb-2">refresh</span>
-                                    <p className="text-sm">Scanning paired devices...</p>
+                                    <p className="text-sm">Scanning nearby devices...</p>
+                                    <p className="text-xs">This may take 10-15 seconds</p>
                                 </div>
                             ) : nativeDevices.length === 0 ? (
                                 <div className="text-center py-8 text-gray-400">
-                                    <span className="material-symbols-outlined text-3xl mb-2">bluetooth_disabled</span>
-                                    <p className="text-sm">No paired printers found.</p>
-                                    <p className="text-xs mt-2">Go to Android Settings &gt; Bluetooth to pair your RPP02N first.</p>
+                                    <span className="material-symbols-outlined text-3xl mb-2">bluetooth_searching</span>
+                                    <p className="text-sm">No printers found.</p>
+                                    <button onClick={scanUnpairedDevices} className="mt-4 text-xs font-bold text-blue-600 hover:text-blue-800 underline">
+                                        Scan for Unpaired Devices
+                                    </button>
                                 </div>
                             ) : (
                                 <div className="space-y-2">
@@ -323,10 +350,11 @@ const Receipt = () => {
                                             className="w-full text-left p-3 rounded-xl border border-slate-100 hover:bg-slate-50 active:bg-blue-50 transition-colors flex items-center gap-3"
                                         >
                                             <span className="material-symbols-outlined text-slate-400">print</span>
-                                            <div>
-                                                <p className="font-bold text-sm text-slate-800">{d.name || "Unknown Device"}</p>
-                                                <p className="text-xs text-slate-400">{d.address}</p>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-bold text-sm text-slate-800 truncate">{d.name || "Unknown Device"}</p>
+                                                <p className="text-xs text-slate-400 font-mono">{d.address}</p>
                                             </div>
+                                            <span className="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
                                         </button>
                                     ))}
                                 </div>
