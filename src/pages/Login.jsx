@@ -129,29 +129,16 @@ const Login = () => {
 
                 {/* Social & Registration Footer */}
                 <div className="flex flex-col gap-6 items-center py-8">
-                    <div className="relative w-full text-center px-4">
-                        <div aria-hidden="true" className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
-                        </div>
-                        <div className="relative flex justify-center">
-                            <span className="bg-background-light dark:bg-background-dark px-4 text-xs font-bold text-slate-400 uppercase tracking-widest">or</span>
-                        </div>
-                    </div>
-                    <button
-                        onClick={handleGoogleLogin}
-                        className="w-full bg-white dark:bg-transparent border border-slate-200 dark:border-slate-600 rounded-2xl py-3.5 flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm active:scale-[0.99]"
-                    >
-                        <img
-                            alt="Google Logo"
-                            className="w-5 h-5"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc9Xv1DtVvyb_r47amzX6gTA0_UPy456O46_XVq7B_Q-3pTJgp87Ybb0v4-xLi_3IJsMZ7VEDVzOR2G0Dx7MT-98-bf7lOqYSvjRPCPCWl4HxxfZDVjy19tUhqkqMroNBHxalGpVufKYldvJhGtMglfeSCzF3ushex5_c_J_x-nqW9n2cRxwQhE8pv_V1kmJA8Ut7XV0QzxtZ3bU6G0UTfs52oDUr1zrp3sHUCsWqLYkU6oepPr8uXeAvkU8Sn2Ci0nwrmfbzrzVpK"
-                        />
-                        <span className="text-slate-700 dark:text-slate-200 font-bold text-base">Continue with Google</span>
-                    </button>
+                    {/* ... (existing content) ... */}
                     <p className="text-slate-500 dark:text-slate-400 text-sm">
                         New here?
                         <Link to="/signup" className="text-primary font-extrabold hover:text-[#005a63] ml-1 transition-colors">Create an Account</Link>
                     </p>
+
+                    {/* Staff Login Link */}
+                    <Link to="/staff/login" className="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 uppercase tracking-widest mt-4">
+                        Merchant / Driver Login
+                    </Link>
                 </div>
             </div>
         </div>

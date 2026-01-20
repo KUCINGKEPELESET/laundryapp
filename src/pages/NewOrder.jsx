@@ -180,7 +180,7 @@ const NewOrder = () => {
         // Load Google Maps Script dynamically if not present
         if (!window.google && !document.getElementById('google-maps-script')) {
             const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCG1IACU7135S4zkT96Hbv3JjS_vtEv7Hg`;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`;
             script.id = 'google-maps-script';
             script.async = true;
             script.defer = true;
