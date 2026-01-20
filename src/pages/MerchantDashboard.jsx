@@ -19,6 +19,51 @@ const MerchantDashboard = () => {
 
     const [drivers, setDrivers] = useState([]);
 
+    // Debug State
+    const [debugDriverId, setDebugDriverId] = useState('');
+    const [testLoading, setTestLoading] = useState(false);
+
+    const sendTestNotification = async () => {
+        if (!debugDriverId) return alert("Enter Target Driver ID (UUID) from the database or list.");
+        setTestLoading(true);
+
+        try {
+            // 1. Create a dummy test order
+            const { data: { user } } = await supabase.auth.getUser();
+            const { data: order, error } = await supabase.from('orders').insert({
+                user_id: user?.id,
+                service: 'TEST NOTIFICATION',
+                status: 'Request Received',
+                total: 1234,
+                address: 'Test Location ' + new Date().toLocaleTimeString(),
+                schedule: 'Now'
+            }).select().single();
+
+            if (error) throw error;
+
+            console.log("Test Order Created:", order.id);
+
+            // 2. Wait 2 seconds to ensure Realtime is ready/distinct
+            setTimeout(async () => {
+                // 3. Update to Trigger Notification
+                const { error: updateError } = await supabase.from('orders').update({
+                    status: 'Pickup Assigned',
+                    driver: { id: debugDriverId, name: 'Test Driver', phone: '08123456789' }
+                }).eq('id', order.id);
+
+                if (updateError) throw updateError;
+
+                alert(`Notification Sent! \nOrder updated to 'Pickup Assigned' for Driver ${debugDriverId}.\n\nCheck the mobile app now.`);
+                setTestLoading(false);
+                fetchOrders();
+            }, 2000);
+
+        } catch (e) {
+            alert("Test Failed: " + e.message);
+            setTestLoading(false);
+        }
+    };
+
     useEffect(() => {
         const fetchDrivers = async () => {
             // Fetch all profiles to ensure we find everyone, filtering in memory to avoid array syntax issues
@@ -542,6 +587,32 @@ const MerchantDashboard = () => {
                     </div>
                 </div>
             )}
+
+            {/* DEBUG SECTION */}
+            <div className="flex justify-center mt-10 opacity-50 hover:opacity-100 transition-opacity">
+                <div className="bg-white p-4 rounded-xl border border-slate-200">
+                    <h4 className="text-xs font-bold uppercase text-slate-400 mb-2">Debug Mobile App</h4>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            placeholder="Driver User ID (UUID)"
+                            value={debugDriverId}
+                            onChange={(e) => setDebugDriverId(e.target.value)}
+                            className="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs w-64"
+                        />
+                        <button
+                            onClick={sendTestNotification}
+                            disabled={testLoading}
+                            className="bg-slate-800 text-white px-3 py-1 rounded text-xs font-bold"
+                        >
+                            {testLoading ? 'Sending...' : 'Test Notification'}
+                        </button>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-1 max-w-xs">
+                        This creates a test order and then assigns it to the Driver ID above to trigger mobile notifications.
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };
