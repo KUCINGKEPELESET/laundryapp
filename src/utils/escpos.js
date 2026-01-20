@@ -65,6 +65,27 @@ export class ReceiptBuilder {
         return this;
     }
 
+    qr(content) {
+        // High-level wrapper for GS ( k commands
+        // 1. Model Selection (Model 2)
+        this.add(GS + '(k' + '\x04\x00' + '\x31\x41\x32\x00');
+        // 2. Module Size (Size 6 - decent size)
+        this.add(GS + '(k' + '\x03\x00' + '\x31\x43\x06');
+        // 3. Error Correction (Level M = 49)
+        this.add(GS + '(k' + '\x03\x00' + '\x31\x45\x31');
+
+        // 4. Store Data
+        const storeLen = content.length + 3;
+        const pL = String.fromCharCode(storeLen % 256);
+        const pH = String.fromCharCode(Math.floor(storeLen / 256));
+        this.add(GS + '(k' + pL + pH + '\x31\x50\x30' + content);
+
+        // 5. Print Symbol
+        this.add(GS + '(k' + '\x03\x00' + '\x31\x51\x30');
+
+        return this;
+    }
+
     // Return Uint8Array for writing to Bluetooth characteristic
     getData() {
         return new Uint8Array(this.buffer);

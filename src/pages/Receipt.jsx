@@ -125,6 +125,8 @@ const Receipt = () => {
             // Header
             builder.init()
                 .align('center')
+                .qr(order.id) // Print QR Code first
+                .feed(1)      // Small gap
                 .bold(true).textLn('SUPERZY LAUNDRY').bold(false)
                 .textLn('123 Clean Street, JKT')
                 .textLn('WA: 0812-3456-7890')
