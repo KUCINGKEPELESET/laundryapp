@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 const DriverDashboard = () => {
     const navigate = useNavigate();
@@ -12,6 +13,65 @@ const DriverDashboard = () => {
     const [selectedOrderId, setSelectedOrderId] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [uploading, setUploading] = useState(false);
+
+    // --- NOTIFICATION SETUP ---
+    useEffect(() => {
+        // Request Permission on mount
+        const reqPerm = async () => {
+            const { display } = await LocalNotifications.requestPermissions();
+            if (display === 'granted') {
+                console.log("Notification permission granted");
+            }
+        }
+        reqPerm();
+    }, []);
+
+    useEffect(() => {
+        if (!profile?.id) return;
+
+        console.log("Subscribing to realtime orders for driver:", profile.id);
+
+        const subscription = supabase
+            .channel('driver-notifications')
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE', // Listen for assignments
+                    schema: 'public',
+                    table: 'orders',
+                },
+                async (payload) => {
+                    const newOrder = payload.new;
+                    // Check if this update is for ME and is a NEW ASSIGNMENT
+                    if (
+                        newOrder.status === 'Pickup Assigned' &&
+                        newOrder.driver &&
+                        newOrder.driver.id === profile.id
+                    ) {
+                        // Trigger Notification
+                        await LocalNotifications.schedule({
+                            notifications: [{
+                                title: "New Pickup Assigned! 🚚",
+                                body: `Order #${newOrder.id.substring(0, 8)} is ready for pickup. Please pick up immediately!`,
+                                id: new Date().getTime(),
+                                schedule: { at: new Date(Date.now() + 100) }, // Now
+                                sound: 'beep.wav', // System default if not found
+                                actionTypeId: "",
+                                extra: null
+                            }]
+                        });
+
+                        // Refresh list
+                        fetchAssignedOrders(profile.id);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(subscription);
+        };
+    }, [profile]);
 
     useEffect(() => {
         const init = async () => {
