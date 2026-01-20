@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LaundryApp</string>
+    <string name="title_activity_main">LaundryApp</string>
+    <string name="package_name">com.superzy.laundry</string>
+    <string name="custom_url_scheme">com.superzy.laundry</string>
+</resources>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospace is best for receipts */
+        }
+
+        body {
+            background-color: #eee;
+            /* Visual distinction on screen */
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #receipt {
+            background-color: white;
+            width: 100%;
+            max-width: 80mm;
+            /* Target 80mm standard, works for 58mm too if scaled */
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 16px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        /* Sections */
+        .header {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed black;
+            padding-bottom: 10px;
+        }
+
+        .info {
+            margin-bottom: 10px;
+        }
+
+        .items-table {
+            width: 100%;
+            margin-bottom: 10px;
+            border-collapse: collapse;
+        }
+
+        .items-table th {
+            text-align: left;
+            border-bottom: 1px solid black;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+
+        .items-table td {
+            font-size: 12px;
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .totals {
+            margin-top: 10px;
+            border-top: 1px dashed black;
+            padding-top: 10px;
+        }
+
+        .totals .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        /* Screen-only elements */
+        .no-print {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #006e7a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Print Specifics */
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+
+            #receipt {
+                width: 100%;
+                max-width: none;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            @page {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div class="no-print">
+            <button onclick="window.print()">Print Receipt</button>
+        </div>
+
+        <div id="receipt">
+            <div class="header text-center">
+                <h1>LAUNDRY APP</h1>
+                <p>123 Clean Street, Downtown</p>
+                <p>Tel: 0812-3456-7890</p>
+            </div>
+
+            <div class="info">
+                <p>Date: <span id="date"></span></p>
+                <p>Order ID: <span id="order-id" class="bold"></span></p>
+                <p>Customer: <span id="customer"></span></p>
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Item</th>
+                        <th style="width: 15%; text-align: center;">Qty</th>
+                        <th class="text-right">Price</th>
+                    </tr>
+                </thead>
+                <tbody id="items-body">
+                    <!-- Injected -->
+                </tbody>
+            </table>
+
+            <div class="totals">
+                <div class="row">
+                    <p>Total</p>
+                    <p class="bold" id="total"></p>
+                </div>
+                <!-- Add Payment Method if available -->
+                <div class="row">
+                    <p>Payment</p>
+                    <p>Cash / Paid</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Thank you for trusting us!</p>
+                <p>-- Customer Copy --</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/init_supabase.js"></script>
+    <script>
+        // Formatter
+        const formatIDR = (num) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(num);
+        };
+
+        // Get ID
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('id');
+
+        async function loadReceipt() {
+            if (!orderId) {
+                document.body.innerHTML = '<p style="text-align:center; padding: 20px;">No Order ID provided.</p>';
+                return;
+            }
+
+            const { data: order, error } = await window.sb
+                .from('orders')
+                .select('*')
+                .eq('id', orderId)
+                .single();
+
+            if (error || !order) {
+                console.error("Error fetching order:", error);
+                document.body.innerHTML = '<p style="text-align:center; padding: 20px;">Order not found.</p>';
+                return;
+            }
+
+            // Populate Logic
+            // Note: 'created_at' is ISO string. 
+            const dateObj = new Date(order.created_at);
+            document.getElementById('date').innerText = dateObj.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            document.getElementById('order-id').innerText = order.id;
+            document.getElementById('customer').innerText = order.user_name || 'Guest';
+            document.getElementById('total').innerText = formatIDR(order.total);
+
+            const tbody = document.getElementById('items-body');
+
+            // Prices Map (Replicating exact logic from new_order.html for consistency)
+            const prices = {
+                'shirt': 15000,
+                'trousers': 20000,
+                'wash-fold-kg': 6000
+            };
+
+            let itemsHtml = '';
+            // Check service type
+            if (order.service === 'Wash & Fold' || order.service === 'wash-fold') {
+                // Wash & Fold Logic
+                // We rely on 'weight' and 'total' from DB
+                itemsHtml += `
+                    <tr>
+                        <td>Wash & Fold</td>
+                        <td style="text-align: center;">${order.weight}kg</td>
+                        <td class="text-right">${formatIDR(order.total)}</td>
+                    </tr>
+                `;
+            } else {
+                // Dry Clean Logic (stored in 'items' jsonb)
+                if (order.items) {
+                    for (const [item, qty] of Object.entries(order.items)) {
+                        if (qty > 0) {
+                            const price = prices[item] || 0;
+                            const lineTotal = price * qty;
+                            const name = item.charAt(0).toUpperCase() + item.slice(1);
+
+                            itemsHtml += `
+                                <tr>
+                                    <td>${name}</td>
+                                    <td style="text-align: center;">${qty}</td>
+                                    <td class="text-right">${formatIDR(lineTotal)}</td>
+                                </tr>
+                            `;
+                        }
+                    }
+                }
+            }
+
+            tbody.innerHTML = itemsHtml;
+
+            // Auto print after small delay for rendering
+            setTimeout(() => {
+                // window.print();
+            }, 800);
+        }
+
+        loadReceipt();
+    </script>
+</body>
+
+</html>
